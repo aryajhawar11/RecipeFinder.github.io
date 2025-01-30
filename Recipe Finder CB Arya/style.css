@@ -34,14 +34,6 @@ body{
 
 }
 #search_input{
-    /* width: 600px;
-    padding:  20px 20px;
-    padding-left: 100px;
-    padding-right: 100px;
-    text-align: center;
-    border: 1px solid grey;
-    border-radius: 5px;
-     */
      width: 60%;
      margin-left: 20%;
      padding: 10px;
@@ -54,9 +46,6 @@ body{
 }
 #search_btn{
     padding: 12px;
-
-    /* background-image:url(https://static.thenounproject.com/png/2946467-200.png) ; */
-   
     border-radius: 5px;
     cursor: pointer;
     
@@ -67,10 +56,9 @@ font-size: 25px;
 margin-bottom: 25px;
 }
 .recipe_section{
-    width: 90%;
-    margin: auto;
-    display: grid ;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
     
 }
 h2{
@@ -78,36 +66,41 @@ h2{
     position: relative;
 }
 .recipe_card img{
-    width: 100%;
-    height:200px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    object-fit: cover;
-    
+  max-height: 150px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
 .recipe_card{
-    margin: 10px 30px;
-    background-color: #fff;
-    box-shadow: 0 0 10px #524949 ;
-    border-radius: 10px;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  max-width: 300px;
+  min-height: 400px; /* Set a consistent height */
+  padding: 16px;
+  overflow: hidden;
 }
+.recipe_card p {
+  flex-grow: 1; /* This makes the description stretch */
+}
+
 .view_recipe_btn{
     
-    padding: 10px 10px;
-    display: block;
-    top: 10px;
-    text-align:center;
-    background-color: rgb(231, 105, 105);
-    color: #fff;
-
-    width: 100%;
+  background-color: #ff6666;
+  color: white;
+  text-align: center;
+  padding: 10px 14px;
+  margin-top: auto; /* Pushes the button to the bottom */
+  border-radius: 6px;
+  cursor: pointer;
 }
 #recipe_dialog{
     
     position: fixed;
     margin: auto ;
-    /* z-index: -1; */
     margin-left: 320px;
     
     width: 70%;
@@ -138,7 +131,7 @@ h2{
 .blur{
     filter: blur(5px);
 }
-.favorite-button {
+#favorite-button {
     padding: 10px 10px;
     background-color: white;
     border: none;
@@ -149,7 +142,7 @@ h2{
     color: #f00; /* Red color for the heart */
   }
   
-  .favorite-button:hover {
+  #favorite-button:hover {
     color: #ff6666;
   }
 
@@ -165,6 +158,7 @@ h2{
     color: #ff6666;
   }
   .close_btn{
+    top: auto;
     margin: 5px 5px;
     padding: 10px 20px;
 
@@ -175,4 +169,13 @@ h2{
 
   .fav{
     color: #ff6666
+  }
+
+  .recipe-dialog-image {
+    margin-left: 10px;
+    width: 95%;
+    max-height: 450px;
+    object-fit:cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
   }
