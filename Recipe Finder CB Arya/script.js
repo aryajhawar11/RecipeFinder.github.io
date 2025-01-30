@@ -10,7 +10,7 @@ const container = document.getElementById('container');
 const timeDifficultyFilter = document.getElementById('time_difficulty');
 const dietTypeFilter = document.getElementById('diet_type_filter');
 const cuisineFilter = document.getElementById('cuisine_filter');
-const favoriteButton = document.querySelector('.favorite-button');;//show favorites button
+const favoriteButton = document.getElementById('favorite-button');;//show favorites button
 const fav_btn=document.querySelector('.fav-btn');// button each card
 // Sample Recipe Data
 const recipes = [{
@@ -169,7 +169,20 @@ const recipes = [{
     cuisine: "Continental",
     instructions: "Marinate chicken with olive oil, lemon juice, salt, and pepper. Grill until cooked through. In a pan, melt butter and sauté garlic. Drizzle garlic butter over grilled chicken and garnish with parsley. Serve hot.",
     favorite: false
+},
+{
+    name: "Peking Duck",
+    image: "https://cravinghomecooked.com/wp-content/uploads/2024/02/peking-duck-1-19.jpg",
+    description: "Peking Duck is a famous Chinese dish featuring crispy roasted duck served with thin pancakes, hoisin sauce, and scallions.",
+    ingredients: ["Duck", "Hoisin sauce", "Soy sauce", "Honey", "Five-spice powder", "Ginger", "Garlic", "Scallions", "Cucumber", "Pancakes", "Salt", "Sesame oil"],
+    difficulty: "hard",
+    time: "4 hours",
+    diet_type: ["Non-Vegetarian"],
+    cuisine: "Chinese",
+    instructions: "Clean the duck and pat it dry. Coat the skin with a honey and soy sauce glaze, then let it dry for several hours. Roast the duck in an oven until the skin turns crispy. Carve the duck into thin slices and serve with warm pancakes, hoisin sauce, scallions, and cucumber slices.",
+    favorite: false
 }
+
 
   // Add your recipe objects here
 ];
@@ -184,8 +197,8 @@ function displayRecipes(filteredRecipes) {
       <img src="${recipe.image}" alt="${recipe.name}">
       <h2>${recipe.name}</h2>
       <p>${recipe.description}</p>
-      <button class="view_recipe_btn" data-index="${index}">View Recipe</button>
-      <button class="fav-btn" data-index="${index}" style="color: ${recipe.favorite ? '#ff6666' : 'burlywood'}">
+      <button class="view_recipe_btn" data-name="${recipe.name}">View Recipe</button>
+      <button class="fav-btn" data-name="${recipe.name}" style="color: ${recipe.favorite ? '#ff6666' : 'burlywood'}">
         <i class="fas fa-heart"></i>
       </button>
     `;
@@ -215,24 +228,36 @@ function filterRecipes() {
   }
 
 // Show Recipe Dialog
-function showRecipeDetails(index) {
-  const recipe = recipes[index];
+function showRecipeDetails(recipeName) {
+  const recipe = recipes.find(r => r.name === recipeName);
+  if (!recipe) return; // Ensure recipe exists
+
   recipeDialog.querySelector('h1').textContent = recipe.name;
   recipeDialog.querySelector('h4:nth-of-type(1)').textContent = `Cuisine: ${recipe.cuisine}`;
   recipeDialog.querySelector('h4:nth-of-type(2)').textContent = `Time: ${recipe.time}`;
   recipeDialog.querySelector('h4:nth-of-type(3)').textContent = `Difficulty: ${recipe.difficulty}`;
   ingredientsList.innerHTML = recipe.ingredients.map(item => `<li>${item}</li>`).join('');
   recipeDialog.querySelector('p').innerHTML = recipe.instructions.replace(/\./g, '.<br>');
+
+  let recipeImage = recipeDialog.querySelector('.recipe-dialog-image');
+  if (!recipeImage) {
+    recipeImage = document.createElement('img');
+    recipeImage.classList.add('recipe-dialog-image');
+    recipeDialog.insertBefore(recipeImage, recipeDialog.querySelector('h1'));
+  }
+  recipeImage.src = recipe.image;
+  recipeImage.alt = recipe.name;
+
   recipeDialog.style.overflowY = 'auto';
   recipeDialog.classList.remove('vanish');
   container.classList.add('blur');
 }
 
+
 function favoriteRecipe(index) {
-        index = Number(index); // Convert index to a number
-        recipes[index].favorite = !recipes[index].favorite;
-        updatedisplayedrecipes();
-    }
+  recipes[index].favorite = !recipes[index].favorite; // Toggle the favorite status
+  updatedisplayedrecipes(); // Update the displayed recipes after the change
+}
   
 
 // Event Listeners
@@ -241,10 +266,10 @@ searchForm.addEventListener('submit', e => {
   filterRecipes();
 });
 
-recipesSection.addEventListener('click', e => {
-  if (e.target.classList.contains('view_recipe_btn')) {
-    const index = e.target.getAttribute('data-index');
-    showRecipeDetails(index);
+recipesSection.addEventListener('click', (event) => {
+  if (event.target.classList.contains('view_recipe_btn')) {
+    const recipeName = event.target.getAttribute('data-name');
+    showRecipeDetails(recipeName);
   }
 });
 
@@ -260,12 +285,14 @@ timeDifficultyFilter.addEventListener('change',()=>filterRecipes())
 dietTypeFilter.addEventListener('change',()=>filterRecipes())
 
 recipesSection.addEventListener('click', (e) => {
-    if (e.target.closest('.fav-btn')) {
-        const index = e.target.closest('.fav-btn').getAttribute('data-index');
-        favoriteRecipe(index);
-        e.target.closest('.fav-btn').style.color = recipes[index].favorite ? '#ff6666' : 'burlywood';
-    }
+  if (e.target.closest('.fav-btn')) {
+      const recipeName = e.target.closest('.fav-btn').getAttribute('data-name'); // Get the recipe name
+      const index = recipes.findIndex(recipe => recipe.name === recipeName); // Find the index of the recipe
+      favoriteRecipe(index); // Call the function to toggle the favorite
+      e.target.closest('.fav-btn').style.color = recipes[index].favorite ? '#ff6666' : 'burlywood'; // Update button color
+  }
 });
+
 
 let show_favorites=false;
 
@@ -273,10 +300,13 @@ function updatedisplayedrecipes() {
     if (show_favorites) {
         displayRecipes(recipes.filter(recipe => recipe.favorite));
     } else {
+      displayRecipes(recipes);
         filterRecipes(); // Ensures filtering is reapplied when favorites toggle is off
     }
 }
+
 console.log("show favorites")
+
 favoriteButton.addEventListener('click', (e) => {
     e.stopPropagation();
     show_favorites = !show_favorites;
@@ -293,4 +323,4 @@ displayRecipes(recipes);
 
 
 
-// favourite symbol not working
+
